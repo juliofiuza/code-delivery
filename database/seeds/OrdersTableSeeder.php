@@ -1,5 +1,6 @@
 <?php
 
+use CodeDelivery\Models\Order;
 use Illuminate\Database\Seeder;
 
 class OrdersTableSeeder extends Seeder
@@ -11,6 +12,6 @@ class OrdersTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(Order::class, 10)->create();
     }
 }

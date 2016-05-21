@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/teste', function () {
+	$repository = app()->make('CodeDelivery\Repositories\CategoryRepository');
+
+	return $repository->all();
+});
