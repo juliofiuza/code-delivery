@@ -2,34 +2,76 @@
 
 namespace CodeDelivery\Services;
 
+use CodeDelivery\Repositories\CupomRepository;
 use CodeDelivery\Repositories\OrderRepository;
-use CodeDelivery\Repositories\UserRepository;
+use CodeDelivery\Repositories\ProductRepository;
 
 class OrderService
 {
+    /**
+     * @var CupomRepository
+     */	
+	private $cupomRepository;
+
     /**
      * @var OrderRepository
      */	
 	private $orderRepository;
 
     /**
-     * @var UserRepository
+     * @var ProductRepository
      */	
-	private $userRepository;
+	private $productRepository;
 
-	public function __construct(OrderRepository $orderRepository, UserRepository $userRepository)
+	public function __construct(CupomRepository $cupomRepository,
+								OrderRepository $orderRepository,
+								ProductRepository $productRepository)
 	{
+		$this->cupomRepository = $cupomRepository;
 		$this->orderRepository = $orderRepository;
-		$this->userRepository = $userRepository;
+		$this->productRepository = $productRepository;
 	}
 
 	public function create(array $data) {
-		$data['user']['password'] = bcrypt(123456);
+		\DB::beginTransaction();
+		
+		try {
+			$data['status'] = 0;
 
-		$user = $this->userRepository->create($data['user']);
+			if (isset($data['cupom_code'])) {
+				$cupom = $this->cupomRepository->findByField('code', $data['cupom_code'])->first();
+				$data['cupom_id'] = $cupom->id;
 
-		$data['user_id'] = $user->id;
-		$this->orderRepository->create($data);
+				$cupom->used = 1;
+				$cupom->save();
+				unset($data['cupom_id']);
+			}
+
+			$items = $data['items'];
+			unset($data['items']);
+
+            $data['total'] = $total = 0;
+            $order = $this->orderRepository->create($data);
+
+			foreach($items as $item) {
+				$item['price'] = $this->productRepository->find($item['product_id'])->price;
+				$order->items()->create($item);
+				$total += $item['price'] * $item['qtd'];
+			}
+
+			$order->total = $total;
+
+			if(isset($cupom)) {
+				$order->total = $total - $cupom->value;
+			}
+
+			$order->save();
+			\DB::commit();
+			return $order;
+		} catch(\Exception $e) {
+			\DB::rollback();
+			throw $e;
+		}
 	}
 
 	public function update(array $data, $id) {
