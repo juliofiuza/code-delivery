@@ -29,4 +29,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth.checkrole', 'as' => 'ad
 	Route::post('products/store', ['as' => 'products.store', 'uses' => 'ProductsController@store']);
 	Route::post('products/update/{id}', ['as' => 'products.update', 'uses' => 'ProductsController@update']);
 	Route::get('products/destroy/{id}', ['as' => 'products.destroy', 'uses' => 'ProductsController@destroy']);
+
+	Route::get('clients', ['as' => 'clients.index', 'uses' => 'ClientsController@index']);
+	Route::get('clients/create', ['as' => 'clients.create', 'uses' => 'ClientsController@create']);
+	Route::get('clients/edit/{id}', ['as' => 'clients.edit', 'uses' => 'ClientsController@edit']);
+	Route::post('clients/store', ['as' => 'clients.store', 'uses' => 'ClientsController@store']);
+	Route::post('clients/update/{id}', ['as' => 'clients.update', 'uses' => 'ClientsController@update']);
+	Route::get('clients/destroy/{id}', ['as' => 'clients.destroy', 'uses' => 'ClientsController@destroy']);
 });

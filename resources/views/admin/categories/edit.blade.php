@@ -13,7 +13,7 @@
 
     <div class="form-group">
         <a href="{{ route('admin.categories.index') }}" class="btn btn-default">Voltar</a>
-        {!! Form::submit('Editar Categoria', ['class' => 'btn btn-primary']) !!}
+        {!! Form::submit('Salvar Categoria', ['class' => 'btn btn-primary']) !!}
     </div>
     {!! Form::close() !!}
 
