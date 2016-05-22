@@ -26,11 +26,11 @@ class AdminClientRequest extends Request
         return [
             'user.name' => 'required|min:3',
             'user.email' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'zipcode' => 'required',
+            'phone' => 'required|min:8',
+            'address' => 'required|min:3',
+            'city' => 'required|min:3',
+            'state' => 'required|min:3',
+            'zipcode' => 'required|min:5'
         ];
     }
 }
