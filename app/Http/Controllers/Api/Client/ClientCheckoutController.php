@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 
-use CodeDelivery\Http\Requests;
+use CodeDelivery\Http\Requests\CheckoutRequest;
 use CodeDelivery\Http\Controllers\Controller;
 
 class ClientCheckoutController extends Controller
@@ -17,17 +17,19 @@ class ClientCheckoutController extends Controller
     /**
      * @var OrderRepository
      */ 
-    protected $repository;
+    private $repository;
 
     /**
      * @var UserRepository
      */ 
-    protected $userRepository;
+    private $userRepository;
 
     /**
      * @var OrderService
      */	
-	protected $service;
+	private $service;
+
+    private $with = ['client', 'cupom', 'items'];
 
 	public function __construct(OrderRepository $repository,
                                 UserRepository $userRepository,
@@ -40,31 +42,31 @@ class ClientCheckoutController extends Controller
     public function index() {
         $id = Authorizer::getResourceOwnerId();
         $clientId = $this->userRepository->find($id)->client->id;
-    	$orders = $this->repository->with(['items'])->scopeQuery(function($query) use ($clientId) {
+    	$orders = $this->repository
+            ->skipPresenter(false)
+            ->with($this->with)
+            ->scopeQuery(function($query) use ($clientId) {
             return $query->where('client_id', $clientId);
         })->paginate(5);
 
     	return $orders;
     }
 
-    public function store(Request $request) {
+    public function store(CheckoutRequest $request) {
     	$data = $request->all();
         $id = Authorizer::getResourceOwnerId();
         $clientId = $this->userRepository->find($id)->client->id;
         $data['client_id'] = $clientId;
-        
     	$o = $this->service->create($data);
-        return $this->repository->with('items')->find($o->id);
+        return $this->repository
+            ->with($this->with)
+            ->find($o->id);
     }
 
     public function show($id) {
-        $order = $this->repository->with(['client', 'items', 'cupom'])->find($id);
-
-        $order->items->each(function($item) {
-            $item->product;
-        });
-
-        return $order;
+        return $this->repository
+            ->skipPresenter(false)
+            ->with($this->with)->find($id);
     }
 
 }
