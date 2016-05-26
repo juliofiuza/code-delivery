@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeDelivery\Http\Controllers\Api\Client;
+namespace CodeDelivery\Http\Controllers\Api\Deliveryman;
 
 use CodeDelivery\Repositories\OrderRepository;
 use CodeDelivery\Repositories\UserRepository;
@@ -12,7 +12,7 @@ use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use CodeDelivery\Http\Requests;
 use CodeDelivery\Http\Controllers\Controller;
 
-class ClientCheckoutController extends Controller
+class DeliverymanCheckoutController extends Controller
 {
     /**
      * @var OrderRepository
@@ -39,32 +39,27 @@ class ClientCheckoutController extends Controller
 
     public function index() {
         $id = Authorizer::getResourceOwnerId();
-        $clientId = $this->userRepository->find($id)->client->id;
-    	$orders = $this->repository->with(['items'])->scopeQuery(function($query) use ($clientId) {
-            return $query->where('client_id', $clientId);
+    	$orders = $this->repository->with(['items'])->scopeQuery(function($query) use ($id) {
+            return $query->where('user_deliveryman_id', $id);
         })->paginate(5);
 
     	return $orders;
     }
 
-    public function store(Request $request) {
-    	$data = $request->all();
-        $id = Authorizer::getResourceOwnerId();
-        $clientId = $this->userRepository->find($id)->client->id;
-        $data['client_id'] = $clientId;
-        
-    	$o = $this->service->create($data);
-        return $this->repository->with('items')->find($o->id);
+    public function show($id) {
+        $idDeliveryman = Authorizer::getResourceOwnerId();
+        return $this->repository->getByIdAndDeliveryman($id, $idDeliveryman);
     }
 
-    public function show($id) {
-        $order = $this->repository->with(['client', 'items', 'cupom'])->find($id);
+    public function updateStatus(Request $request, $id) {
+        $idDeliveryman = Authorizer::getResourceOwnerId();
+        $order = $this->service->updateStatus($id, $idDeliveryman, $request->get('status'));
 
-        $order->items->each(function($item) {
-            $item->product;
-        });
+        if ($order) {
+            return $order;
+        }
 
-        return $order;
+        abort(400, 'Pedido não encontrado');
     }
 
 }
