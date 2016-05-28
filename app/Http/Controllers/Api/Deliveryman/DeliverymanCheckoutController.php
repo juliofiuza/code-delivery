@@ -17,17 +17,17 @@ class DeliverymanCheckoutController extends Controller
     /**
      * @var OrderRepository
      */ 
-    protected $repository;
+    private $repository;
 
     /**
      * @var UserRepository
      */ 
-    protected $userRepository;
+    private $userRepository;
 
     /**
      * @var OrderService
      */	
-	protected $service;
+	private $service;
 
     private $with = ['client', 'cupom', 'items'];
 
