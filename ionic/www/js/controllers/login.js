@@ -1,4 +1,4 @@
-angular.module('code-delivery.controllers', [])
+angular.module('code-delivery.controllers')
 	.controller('LoginCtrl', [
 	'$scope', 'OAuth', '$state', '$ionicPopup',
 	function($scope, OAuth, $state, $ionicPopup) {

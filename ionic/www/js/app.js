@@ -3,12 +3,19 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
+angular.module('code-delivery.controllers', []);
+angular.module('code-delivery.services', []);
+
 angular.module('code-delivery', [
     'ionic',
+    'code-delivery.controllers',
+    'code-delivery.services',
     'angular-oauth2',
-    'code-delivery.controllers'
+    'ngResource'
 ])
-
+.constant('appConfig', {
+  baseUrl: 'http://localhost/code-delivery'
+})
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -26,10 +33,10 @@ angular.module('code-delivery', [
     }
   });
 })
-.config(function($stateProvider, $urlRouterProvider, OAuthProvider, OAuthTokenProvider) {
+.config(function($stateProvider, $urlRouterProvider, OAuthProvider, OAuthTokenProvider, appConfig) {
 
   OAuthProvider.configure({
-    baseUrl: 'http://localhost/code-delivery',
+    baseUrl: appConfig.baseUrl,
     clientId: 'appid01',
     clientSecret: 'secret', // optional
     grantPath: '/oauth/access_token'
@@ -54,6 +61,32 @@ angular.module('code-delivery', [
       url: '/login',
       templateUrl: 'templates/login.html',
       controller: 'LoginCtrl'
+    })
+    .state('client', {
+      abstract: true,
+      url: '/client',
+      template: '<ion-nav-view/>'
+    })
+    .state('client.checkout', {
+      cache: false,
+      url: '/checkout',
+      templateUrl: 'templates/client/checkout.html',
+      controller: 'ClientCheckoutCtrl'
+    })
+    .state('client.checkout_item_detail', {
+      url: '/checkout/detail/:index',
+      templateUrl: 'templates/client/checkout_item_detail.html',
+      controller: 'ClientCheckoutDetailCtrl'
+    })
+    .state('client.checkout_successful', {
+      url: '/checkout/successful',
+      templateUrl: 'templates/client/checkout_successful.html',
+      controller: 'ClientCheckoutSuccessfulCtrl'
+    })
+    .state('client.view_products', {
+      url: '/view_products',
+      templateUrl: 'templates/client/view_products.html',
+      controller: 'ClientViewProductCtrl'
     });
 
   $urlRouterProvider.otherwise('/login');
