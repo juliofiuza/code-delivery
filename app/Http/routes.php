@@ -73,6 +73,8 @@ Route::group(['middleware' => 'cors'], function() {
 			Route::resource('order', 'Api\Deliveryman\DeliverymanCheckoutController', ['except' => ['create', 'edit', 'destroy', 'store']]);
 			Route::patch('order/{id}/update-status', ['as' => 'orders.update_status', 'uses' => 'Api\Deliveryman\DeliverymanCheckoutController@updateStatus']);
 		});
+
+		Route::get('cupom/{code}', 'Api\CupomController@show');
 	});
 
 });

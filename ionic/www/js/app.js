@@ -5,16 +5,21 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('code-delivery.controllers', []);
 angular.module('code-delivery.services', []);
-
+/*
+  baseUrl: 'http://localhost/code-delivery'
+  baseUrl: 'http://192.168.25.28/code-delivery'
+  baseUrl: 'http://codedelivery.servehttp.com'
+*/
 angular.module('code-delivery', [
     'ionic',
     'code-delivery.controllers',
     'code-delivery.services',
     'angular-oauth2',
-    'ngResource'
+    'ngResource',
+    'ngCordova'
 ])
 .constant('appConfig', {
-  baseUrl: 'http://localhost/code-delivery'
+  baseUrl: 'http://codedelivery.servehttp.com'
 })
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -33,7 +38,7 @@ angular.module('code-delivery', [
     }
   });
 })
-.config(function($stateProvider, $urlRouterProvider, OAuthProvider, OAuthTokenProvider, appConfig) {
+.config(function($stateProvider, $urlRouterProvider, OAuthProvider, OAuthTokenProvider, appConfig, $provide) {
 
   OAuthProvider.configure({
     baseUrl: appConfig.baseUrl,
@@ -79,6 +84,7 @@ angular.module('code-delivery', [
       controller: 'ClientCheckoutDetailCtrl'
     })
     .state('client.checkout_successful', {
+      cache: false,
       url: '/checkout/successful',
       templateUrl: 'templates/client/checkout_successful.html',
       controller: 'ClientCheckoutSuccessfulCtrl'
@@ -90,4 +96,35 @@ angular.module('code-delivery', [
     });
 
   $urlRouterProvider.otherwise('/login');
+
+  $provide.decorator('OAuthToken',['$localStorage','$delegate', function ($localStorage,$delegate) {
+    Object.defineProperties($delegate,{
+      setToken:{
+        value:function (data) {
+          return $localStorage.setObject('token',data);
+        },
+        enumerable: true,
+        configurable:true,
+        writable:true
+      },
+      getToken:{
+        value:function () {
+          return $localStorage.getObject('token');
+        },
+        enumerable: true,
+        configurable:true,
+        writable:true
+      },
+      removeToken:{
+        value:function () {
+          $localStorage.setObject('token',null);
+        },
+        enumerable: true,
+        configurable:true,
+        writable:true
+      }
+    });
+
+    return $delegate;
+  }]);
 });

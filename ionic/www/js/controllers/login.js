@@ -9,7 +9,7 @@ angular.module('code-delivery.controllers')
 
         $scope.login = function() {
         	OAuth.getAccessToken($scope.user).then( function(data) {
-        		$state.go('home');
+        		$state.go('client.checkout');
         	}, function(error) {
         		$ionicPopup.alert({
         			title: 'Advertência',
