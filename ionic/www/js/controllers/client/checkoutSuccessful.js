@@ -9,6 +9,6 @@ angular.module('code-delivery.controllers')
 		$cart.clear();
 
 		$scope.openListOrder = function() {
-
+			$state.go('client.order');
 		};
 	}]);

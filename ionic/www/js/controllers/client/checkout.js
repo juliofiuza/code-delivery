@@ -7,7 +7,7 @@ angular.module('code-delivery.controllers')
 		$scope.items = cart.items;
 		$scope.total = $cart.getTotalFinal();
 		//$scope.showDelete = false;
-
+		
 		$scope.removeItem = function(i) {
 			$cart.removeItem(i);
 			$scope.items.splice(i, 1);

@@ -2,8 +2,9 @@
 
 namespace CodeDelivery\Transformers;
 
-use League\Fractal\TransformerAbstract;
 use CodeDelivery\Models\Order;
+use Illuminate\Database\Eloquent\Collection;
+use League\Fractal\TransformerAbstract;
 
 /**
  * Class OrderTransformer
@@ -31,12 +32,19 @@ class OrderTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             'status' => $model->status,
-            'client_id' => $model->client_id,
-            'user_deliveryman_id' => $model->user_deliveryman_id,
             'total' => (float)$model->total,
+            'product_names' => $this->getArrayProductNames($model->items),
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at
         ];
+    }
+
+    protected function getArrayProductNames(Collection $items) {
+        $names = [];
+        foreach ($items as $item) {
+            $names[] = $item->product->name;
+        }
+        return $names;
     }
 
     public function includeClient(Order $model) {

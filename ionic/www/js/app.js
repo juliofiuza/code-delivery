@@ -5,6 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('code-delivery.controllers', []);
 angular.module('code-delivery.services', []);
+angular.module('code-delivery.filters', []);
 /*
   baseUrl: 'http://localhost/code-delivery'
   baseUrl: 'http://192.168.25.28/code-delivery'
@@ -14,12 +15,13 @@ angular.module('code-delivery', [
     'ionic',
     'code-delivery.controllers',
     'code-delivery.services',
+    'code-delivery.filters',
     'angular-oauth2',
     'ngResource',
     'ngCordova'
 ])
 .constant('appConfig', {
-  baseUrl: 'http://codedelivery.servehttp.com'
+  baseUrl: 'http://localhost/code-delivery'
 })
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -55,13 +57,6 @@ angular.module('code-delivery', [
   });
 
   $stateProvider
-    .state('home', {
-      url: '/',
-      templateUrl: 'templates/home.html',
-      controller: function($scope) {
-
-      }
-    })
     .state('login', {
       url: '/login',
       templateUrl: 'templates/login.html',
@@ -70,7 +65,22 @@ angular.module('code-delivery', [
     .state('client', {
       abstract: true,
       url: '/client',
-      template: '<ion-nav-view/>'
+      templateUrl: 'templates/client/menu.html',
+      controller: 'ClientMenuCtrl'
+    })
+    .state('client.home', {
+      url: '/home',
+      templateUrl: 'templates/home.html'
+    })
+    .state('client.order', {
+      url: '/order',
+      templateUrl: 'templates/client/order.html',
+      controller: 'ClientOrderCtrl'
+    })
+    .state('client.view_order', {
+      url: '/view_order/:id',
+      templateUrl: 'templates/client/view_order.html',
+      controller: 'ClientViewOrderCtrl'
     })
     .state('client.checkout', {
       cache: false,

@@ -11,7 +11,7 @@ use CodeDelivery\Models\Client;
  */
 class ClientTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['user'];
+    protected $availableIncludes = ['user'];
 
     /**
      * Transform the \Client entity
@@ -23,7 +23,6 @@ class ClientTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-            'user_id' => $model->user_id,
             'phone' => $model->phone,
             'address' => $model->address,
             'city' => $model->city,
