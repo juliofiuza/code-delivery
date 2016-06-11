@@ -1,5 +1,5 @@
 angular.module('code-delivery.controllers')
-	.controller('ClientMenuCtrl', [
+	.controller('DeliverymanMenuCtrl', [
 	'$scope', 'UserData', function($scope, UserData) {
 		$scope.user = UserData.get();
 	}]);

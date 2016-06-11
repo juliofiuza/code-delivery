@@ -1,7 +1,7 @@
 angular.module('code-delivery.controllers')
 	.controller('ClientCheckoutCtrl', [
-	'$scope', '$state', '$ionicLoading', '$ionicPopup', '$cordovaBarcodeScanner', '$cart', 'Order', 'Cupom',
-	function($scope, $state, $ionicLoading, $ionicPopup, $cordovaBarcodeScanner, $cart, Order, Cupom) {
+	'$scope', '$state', '$ionicLoading', '$ionicPopup', '$cordovaBarcodeScanner', '$cart', 'ClientOrder', 'Cupom',
+	function($scope, $state, $ionicLoading, $ionicPopup, $cordovaBarcodeScanner, $cart, ClientOrder, Cupom) {
 		var cart = $cart.get();
 		$scope.cupom = cart.cupom;
 		$scope.items = cart.items;
@@ -36,7 +36,7 @@ angular.module('code-delivery.controllers')
 				template: 'Carregando...'
 			});
 
-			Order.save({ id: null }, o, function(data) {
+			ClientOrder.save({ id: null }, o, function(data) {
 				$ionicLoading.hide();
 				$state.go('client.checkout_successful');
 			}, function(error) {

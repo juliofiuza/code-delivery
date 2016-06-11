@@ -8,7 +8,6 @@ angular.module('code-delivery.services', []);
 angular.module('code-delivery.filters', []);
 /*
   baseUrl: 'http://localhost/code-delivery'
-  baseUrl: 'http://192.168.25.28/code-delivery'
   baseUrl: 'http://codedelivery.servehttp.com'
 */
 angular.module('code-delivery', [
@@ -64,13 +63,14 @@ angular.module('code-delivery', [
     })
     .state('client', {
       abstract: true,
+      cache: false,
       url: '/client',
       templateUrl: 'templates/client/menu.html',
       controller: 'ClientMenuCtrl'
     })
     .state('client.home', {
       url: '/home',
-      templateUrl: 'templates/home.html'
+      templateUrl: 'templates/client/home.html'
     })
     .state('client.order', {
       url: '/order',
@@ -103,6 +103,28 @@ angular.module('code-delivery', [
       url: '/view_products',
       templateUrl: 'templates/client/view_products.html',
       controller: 'ClientViewProductCtrl'
+    })
+    .state('deliveryman', {
+      abstract: true,
+      cache: false,
+      url: '/deliveryman',
+      templateUrl: 'templates/deliveryman/menu.html',
+      controller: 'DeliverymanMenuCtrl'
+    })
+    .state('deliveryman.home', {
+      url: '/home',
+      templateUrl: 'templates/deliveryman/home.html'
+    })
+    .state('deliveryman.order', {
+      url: '/order',
+      templateUrl: 'templates/deliveryman/order.html',
+      controller: 'DeliverymanOrderCtrl'
+    })
+    .state('deliveryman.view_order', {
+      cache: false,
+      url: '/view_order/:id',
+      templateUrl: 'templates/deliveryman/view_order.html',
+      controller: 'DeliverymanViewOrderCtrl'
     });
 
   $urlRouterProvider.otherwise('/login');
