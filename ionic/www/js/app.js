@@ -12,17 +12,23 @@ angular.module('code-delivery.filters', []);
 */
 angular.module('code-delivery', [
     'ionic',
+    'ionic.service.core',
     'code-delivery.controllers',
     'code-delivery.services',
     'code-delivery.filters',
     'angular-oauth2',
     'ngResource',
-    'ngCordova'
+    'ngCordova',
+    'uiGmapgoogle-maps',
+    'pusher-angular'
 ])
 .constant('appConfig', {
-  baseUrl: 'http://localhost/code-delivery'
+  baseUrl: 'http://localhost/code-delivery',
+  pusherKey: 'a744afbd48e99b9ea19a'
 })
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $window, appConfig) {
+  $window.client = new Pusher(appConfig.pusherKey);
+
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -37,6 +43,16 @@ angular.module('code-delivery', [
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    Ionic.io();
+
+    var push = new Ionic.Push({
+      debug: true
+    });
+
+    push.register(function(token){
+      
+    });
   });
 })
 .config(function($stateProvider, $urlRouterProvider, OAuthProvider, OAuthTokenProvider, appConfig, $provide) {
@@ -81,6 +97,12 @@ angular.module('code-delivery', [
       url: '/view_order/:id',
       templateUrl: 'templates/client/view_order.html',
       controller: 'ClientViewOrderCtrl'
+    })
+    .state('client.view_delivery', {
+      cache: false,
+      url: '/view_delivery/:id',
+      templateUrl: 'templates/client/view_delivery.html',
+      controller: 'ClientViewDeliveryCtrl'
     })
     .state('client.checkout', {
       cache: false,
