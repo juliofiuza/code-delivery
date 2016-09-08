@@ -21,7 +21,6 @@ angular.module('code-delivery.controllers')
 		ClientOrder.get({id: $stateParams.id, include: 'items,cupom'}, function(data) {
 			$scope.order = data.data;
 			
-
 			if (parseInt($scope.order.status, 10) == 1) {
 				initMarkers($scope.order);
 			} else {

@@ -38,7 +38,7 @@ angular.module('code-delivery', [
       // Don't remove this line unless you know what you are doing. It stops the viewport
       // from snapping when text inputs are focused. Ionic handles this internally for
       // a much nicer keyboard experience.
-      cordova.plugins.Keyboard.disableScroll(true);
+      //cordova.plugins.Keyboard.disableScroll(true);
     }
     if(window.StatusBar) {
       StatusBar.styleDefault();
@@ -47,11 +47,14 @@ angular.module('code-delivery', [
     Ionic.io();
 
     var push = new Ionic.Push({
-      debug: true
+      debug: true,
+      onNotification: function(message) {
+        console.log(message);
+      }
     });
 
     push.register(function(token){
-      
+      console.log(token);
     });
   });
 })
